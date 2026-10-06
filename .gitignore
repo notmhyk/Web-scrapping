@@ -1,0 +1,21 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Browser profiles (Saved cookies, sessions, authentication tokens)
+browser_profiles/
+.user_data/
+
+# Temporary downloads & logs
+downloads/
+*.log
+
+# Large Binaries
+cloudflared.exe
+*.exe
+
+# Local scratch / system files
+.system_generated/
+.idea/
+.vscode/

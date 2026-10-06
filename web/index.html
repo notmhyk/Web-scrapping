@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Multi-Store Sales Dashboard (4 Cities • Grab + Foodpanda)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Header -->
+    <header class="dashboard-header">
+      <div class="header-left">
+        <img src="/static/logo.png" class="logo-img" alt="Dashboard Logo">
+        <div>
+          <h1 class="header-title">Multi-Store Sales Dashboard</h1>
+        </div>
+      </div>
+
+      <div class="header-right">
+        <button id="btn-toggle-theme" class="btn btn-theme-toggle" title="Switch between Dark and Light mode">
+          <span>Light Mode</span>
+        </button>
+        <div class="status-indicator-badge">
+          <span class="status-dot" id="backend-status-dot"></span>
+          <span id="backend-status-text">Not Synced</span>
+        </div>
+        <button id="btn-launch-browsers" class="btn btn-primary">
+          Launch All 8 Browsers
+        </button>
+        <button id="btn-tile-browsers" class="btn btn-secondary" title="Snap all 8 browser windows to their exact locked 2x4 screen grid">
+          Lock & Align Grid
+        </button>
+      </div>
+    </header>
+
+    <!-- Default Visible Primary Control Bar (Left: Actions, Center: Date & Time, Right: Timer & Settings) -->
+    <section class="primary-control-bar">
+      <div class="primary-controls-left">
+        <button id="btn-scrape-all" class="btn btn-accent">
+          Scrape All 4 Cities
+        </button>
+        <button id="btn-stop-scraping" class="btn btn-danger" title="Cancel and immediately terminate any ongoing scraping">
+          Stop Scraping
+        </button>
+        <button id="btn-toggle-auto" class="btn btn-success">
+          Start Auto-Scraping
+        </button>
+        <button id="btn-eod" class="btn btn-purple" title="Scrape yesterday's End-of-Day (EOD) sales across all 4 cities">
+          EOD
+        </button>
+      </div>
+
+      <div class="primary-controls-center">
+        <div class="live-clock-card" id="live-clock-card">
+          <span class="live-clock-date" id="live-clock-date">Date Loading...</span>
+          <span class="live-clock-time" id="live-clock-time">00:00:00 AM</span>
+        </div>
+      </div>
+
+      <div class="primary-controls-right">
+        <div class="countdown-badge" id="countdown-badge">
+          <span id="countdown-text">Next Scrape: Stopped</span>
+        </div>
+        <button id="btn-toggle-settings" class="btn btn-secondary">
+          Settings
+        </button>
+      </div>
+    </section>
+
+    <!-- Collapsible Advanced Settings Drawer (Hidden by Default) -->
+    <section class="settings-drawer collapsed" id="settings-drawer">
+      <div class="settings-drawer-inner">
+        <div class="settings-inputs-left">
+          <div class="input-group">
+            <label for="interval-input">Interval:</label>
+            <div class="spin-box-wrapper">
+              <input type="number" id="interval-input" min="1" max="120" value="1">
+              <span class="unit-text">min</span>
+            </div>
+          </div>
+          <div class="input-group">
+            <label for="wait-input">Grab Delay:</label>
+            <div class="spin-box-wrapper">
+              <input type="number" id="wait-input" min="1" max="30" value="5">
+              <span class="unit-text">sec</span>
+            </div>
+          </div>
+          <div class="input-group">
+            <label for="panda-wait-input" title="Wait time for Foodpanda portals to finish loading before scraping">Panda Delay:</label>
+            <div class="spin-box-wrapper">
+              <input type="number" id="panda-wait-input" min="5" max="60" value="10">
+              <span class="unit-text">sec</span>
+            </div>
+          </div>
+          <label class="checkbox-label" title="Forcefully reload and deep-scan if any branch returns 0 or fails">
+            <input type="checkbox" id="force-retry-chk" checked>
+            <span>Force Retry on 0</span>
+          </label>
+          <div class="input-group">
+            <label for="retries-input">Retries:</label>
+            <input type="number" id="retries-input" min="1" max="10" value="3" class="small-spin">
+          </div>
+        </div>
+        <div class="settings-inputs-right">
+          <button id="btn-toggle-all-drawers" class="btn btn-secondary" title="Expand or collapse training tools on all cards">
+            Toggle Tools
+          </button>
+          <button id="btn-open-txt" class="btn btn-secondary">
+            Open TXT Log
+          </button>
+          <button id="btn-open-csv" class="btn btn-secondary">
+            Open CSV Log
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- View Mode Switcher: Live Today vs Yesterday EOD -->
+    <div class="view-mode-switcher-container">
+      <div class="view-mode-switcher" id="app-mode-switcher">
+        <button class="view-mode-btn active live-btn" id="btn-admin-view-live" onclick="setAppTab('live')">
+          <span>Live Sales (Today)</span>
+        </button>
+        <button class="view-mode-btn eod-btn" id="btn-admin-view-eod" onclick="setAppTab('eod')">
+          <span>View EOD (Yesterday)</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- 4 Consolidated Branch Cards Grid (Angeles top-left, QC top-right, Caloocan bottom-left, San Fernando bottom-right) -->
+    <main class="branches-grid" id="branches-grid">
+      <!-- Generated via app.js in 2x2 layout -->
+    </main>
+
+    <!-- Grand Combined Total Sales Banner -->
+    <section class="summary-banner">
+      <div class="summary-content">
+        <div class="summary-left">
+          <span class="summary-label" id="app-summary-label">COMBINED TOTAL SALES (TODAY)</span>
+        </div>
+        <div class="summary-center">
+          <h2 class="total-sales-amount" id="total-combined-sales">₱ 0.00</h2>
+        </div>
+        <div class="summary-right">
+          <span class="last-updated-badge" id="last-updated-time">Last Updated: Never</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Activity Log Terminal -->
+    <section class="console-section">
+      <div class="console-header">
+        <div class="console-title">
+          Activity Log & Output Console
+        </div>
+        <div class="console-actions">
+          <button id="btn-clear-console" class="btn-mini">Clear Logs</button>
+        </div>
+      </div>
+      <div class="console-window" id="console-window">
+        <div class="log-line info">
+          <span class="log-ts">[00:00:00]</span> <span class="log-badge">[INFO]</span> Dashboard ready. Click 'Launch All 8 Browsers' or 'Scrape All 4 Cities'.
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <!-- Modal Dialog -->
+  <div class="modal-backdrop" id="modal-backdrop">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 id="modal-title">Notification</h3>
+        <button class="modal-close" id="modal-close-btn">&times;</button>
+      </div>
+      <div class="modal-body" id="modal-body"></div>
+      <div class="modal-footer">
+        <button class="btn btn-primary" id="modal-ok-btn">OK</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>

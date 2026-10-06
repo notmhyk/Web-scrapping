@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Multi-Store Sales Dashboard (Live Executive View)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/style.css">
+  <link rel="stylesheet" href="./style.css">
+  <style>
+    .viewer-sub-bar {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 4px;
+    }
+    .viewer-mode-badge {
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid var(--bg-card-border);
+      color: var(--primary);
+      padding: 6px 16px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .viewer-footer {
+      text-align: center;
+      padding: 12px 0 20px;
+      color: var(--text-dim);
+      font-size: 12px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 16px;
+    }
+    .viewer-footer-pill {
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid var(--bg-card-border);
+      padding: 4px 14px;
+      border-radius: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="app-container">
+    
+    <!-- Top Header -->
+    <header class="dashboard-header">
+      <div class="header-left">
+        <img src="/static/logo.png" class="logo-img" alt="Logo" onerror="this.src='./logo.png'">
+        <div>
+          <h1 class="header-title">Multi-Store Sales Dashboard</h1>
+        </div>
+      </div>
+
+      <div class="header-right">
+        <button id="btn-toggle-theme" class="btn btn-theme-toggle" title="Switch between Light and Dark mode" onclick="toggleTheme()">
+          <span>Dark Mode</span>
+        </button>
+        <div class="status-indicator-badge" id="viewer-status-badge">
+          <span class="status-dot" id="viewer-status-dot"></span>
+          <span id="viewer-status-text">Not Synced</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Center Date & Clock Bar -->
+    <section class="viewer-sub-bar">
+      <div class="live-clock-card" id="live-clock-card">
+        <span class="live-clock-date" id="live-clock-date">Date Loading...</span>
+        <span class="live-clock-time" id="live-clock-time">00:00:00 AM</span>
+      </div>
+    </section>
+
+    <!-- View Mode Switcher (Live Today vs Yesterday EOD) -->
+    <div class="view-mode-switcher-container">
+      <div class="view-mode-switcher" id="viewer-mode-switcher">
+        <button class="view-mode-btn active live-btn" id="btn-view-live" onclick="setViewerTab('live')">
+          <span>Live Sales (Today)</span>
+        </button>
+        <button class="view-mode-btn eod-btn" id="btn-view-eod" onclick="setViewerTab('eod')">
+          <span>View EOD (Yesterday)</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- 4 Consolidated Branch Cards Grid (2x2 Layout) -->
+    <main class="branches-grid" id="viewer-branches-grid">
+      <!-- Injected dynamically via viewer.js -->
+    </main>
+
+    <!-- Grand Combined Total Sales Banner -->
+    <section class="summary-banner">
+      <div class="summary-content">
+        <div class="summary-left">
+          <span class="summary-label" id="viewer-summary-label">COMBINED TOTAL SALES (TODAY)</span>
+        </div>
+        <div class="summary-center">
+          <h2 class="total-sales-amount" id="viewer-total-sales">₱ 0.00</h2>
+        </div>
+        <div class="summary-right">
+          <span class="last-updated-badge" id="viewer-last-updated">Last Updated: Loading...</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Read-Only Notice Footer -->
+    <footer class="viewer-footer">
+      <div class="viewer-footer-pill">
+        Executive Read-Only View
+      </div>
+      <div class="viewer-footer-pill" id="viewer-mode-pill">
+        Mode: Live Operations
+      </div>
+    </footer>
+
+  </div>
+
+  <script src="/static/viewer.js"></script>
+  <script src="./viewer.js"></script>
+</body>
+</html>
