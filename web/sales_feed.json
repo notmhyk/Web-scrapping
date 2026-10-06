@@ -95,10 +95,10 @@
         "width": 320,
         "height": 340
       },
-      "last_amount": 0.0,
-      "last_raw_text": "\u20b10.00",
+      "last_amount": 329.35,
+      "last_raw_text": "\u20b1329.35",
       "last_success": true,
-      "status": "check",
+      "status": "active",
       "is_eod": false,
       "eod_yesterday_selector": "div#root > div > div > div:nth-of-type(2) > div > div > div > div"
     },
@@ -181,7 +181,7 @@
       "last_amount": 0.0,
       "last_raw_text": "\u20b10.00 (30 stores)",
       "last_success": true,
-      "status": "check",
+      "status": "scraping",
       "is_eod": false,
       "eod_dropdown_selector": "div#rc-tabs-0-panel-overview > div > div > div > div > div > div:nth-of-type(3) > div > button",
       "eod_yesterday_selector": "div#rc-tabs-0-panel-overview > div > div > div > div > div > div:nth-of-type(3) > div > button"
@@ -205,7 +205,7 @@
       "last_amount": 0.0,
       "last_raw_text": "\u20b10",
       "last_success": true,
-      "status": "check",
+      "status": "scraping",
       "is_eod": false
     },
     {
@@ -266,7 +266,7 @@
       "last_amount": 0.0,
       "last_raw_text": "\u20b10.00 (Overall \u20b10.00 - Caloocan \u20b10.00)",
       "last_success": true,
-      "status": "check",
+      "status": "scraping",
       "is_eod": false
     },
     {
@@ -288,12 +288,12 @@
       "last_amount": 0.0,
       "last_raw_text": "\u20b10",
       "last_success": true,
-      "status": "check",
+      "status": "scraping",
       "is_eod": false
     }
   ],
-  "total_sales": 0.0,
-  "last_updated": "2026-10-07 00:05:08",
+  "total_sales": 329.35,
+  "last_updated": "2026-10-07 00:22:47",
   "is_live_synced": true,
   "auto_running": true,
   "eod_stores": [
@@ -566,5 +566,5 @@
   "eod_total_sales": 100657.81,
   "eod_last_updated": "2026-10-07 00:01:22 (Yesterday EOD)",
   "eod_recorded": true,
-  "timestamp": "2026-10-07 00:05:08"
+  "timestamp": "2026-10-07 00:22:47"
 }
