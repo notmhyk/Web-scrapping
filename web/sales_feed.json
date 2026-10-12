@@ -44,10 +44,10 @@
         "width": 320,
         "height": 340
       },
-      "last_amount": 0.0,
-      "last_raw_text": "\u20b10.00",
+      "last_amount": 22243.54,
+      "last_raw_text": "\u20b122,243.54",
       "last_success": true,
-      "status": "check",
+      "status": "active",
       "eod_yesterday_selector": "div#root > div > div > div:nth-of-type(2) > div > div > div",
       "is_eod": false
     },
@@ -67,10 +67,10 @@
         "width": 320,
         "height": 340
       },
-      "last_amount": 0.0,
-      "last_raw_text": "\u20b10",
+      "last_amount": 3728.0,
+      "last_raw_text": "\u20b13,728",
       "last_success": true,
-      "status": "check",
+      "status": "active",
       "is_eod": false,
       "eod_url": "https://partner.foodpanda.com/dashboard?vendor=FP_PH;klbr",
       "eod_dropdown_selector": "div#root > div > div > div:nth-of-type(3) > div > div > div > div:nth-of-type(2) > article:nth-of-type(2) > div:nth-of-type(2) > nav > div:nth-of-type(2) > div > button:nth-of-type(2) > span",
@@ -95,8 +95,8 @@
         "width": 320,
         "height": 340
       },
-      "last_amount": 329.35,
-      "last_raw_text": "\u20b1329.35",
+      "last_amount": 10018.8,
+      "last_raw_text": "\u20b110,018.80",
       "last_success": true,
       "status": "active",
       "is_eod": false,
@@ -118,10 +118,10 @@
         "width": 320,
         "height": 340
       },
-      "last_amount": 0.0,
-      "last_raw_text": "\u20b10",
+      "last_amount": 2609.0,
+      "last_raw_text": "\u20b12,609",
       "last_success": true,
-      "status": "check",
+      "status": "scraping",
       "is_eod": false,
       "eod_url": "https://partner.foodpanda.com/dashboard?vendor=FP_PH;vt23",
       "eod_dropdown_selector": "",
@@ -178,8 +178,8 @@
         "width": 320,
         "height": 340
       },
-      "last_amount": 0.0,
-      "last_raw_text": "\u20b10.00 (30 stores)",
+      "last_amount": 5534.0,
+      "last_raw_text": "\u20b15,534.00 (30 stores)",
       "last_success": true,
       "status": "scraping",
       "is_eod": false,
@@ -202,8 +202,8 @@
         "width": 320,
         "height": 340
       },
-      "last_amount": 0.0,
-      "last_raw_text": "\u20b10",
+      "last_amount": 4378.0,
+      "last_raw_text": "\u20b14,378",
       "last_success": true,
       "status": "scraping",
       "is_eod": false
@@ -263,8 +263,8 @@
         "width": 320,
         "height": 340
       },
-      "last_amount": 0.0,
-      "last_raw_text": "\u20b10.00 (Overall \u20b10.00 - Caloocan \u20b10.00)",
+      "last_amount": 10689.2,
+      "last_raw_text": "\u20b110,689.20 (Overall \u20b116,223.20 - Caloocan \u20b15,534.00)",
       "last_success": true,
       "status": "scraping",
       "is_eod": false
@@ -285,15 +285,15 @@
         "width": 320,
         "height": 340
       },
-      "last_amount": 0.0,
-      "last_raw_text": "\u20b10",
+      "last_amount": 2295.0,
+      "last_raw_text": "\u20b12,295",
       "last_success": true,
       "status": "scraping",
       "is_eod": false
     }
   ],
-  "total_sales": 329.35,
-  "last_updated": "2026-10-07 00:22:47",
+  "total_sales": 61495.54,
+  "last_updated": "2026-10-12 20:07:09",
   "is_live_synced": true,
   "auto_running": true,
   "eod_stores": [
@@ -315,8 +315,8 @@
         "width": 320,
         "height": 340
       },
-      "last_amount": 36392.63,
-      "last_raw_text": "36,392.63",
+      "last_amount": 40367.2,
+      "last_raw_text": "40,367.20",
       "last_success": true,
       "status": "active",
       "eod_yesterday_selector": "div#root > div > div > div:nth-of-type(2) > div > div > div",
@@ -338,8 +338,8 @@
         "width": 320,
         "height": 340
       },
-      "last_amount": 2557.0,
-      "last_raw_text": "\u20b12,557",
+      "last_amount": 7544.0,
+      "last_raw_text": "\u20b17,544",
       "last_success": true,
       "status": "active",
       "is_eod": true,
@@ -366,8 +366,8 @@
         "width": 320,
         "height": 340
       },
-      "last_amount": 13553.95,
-      "last_raw_text": "13,553.95",
+      "last_amount": 16465.6,
+      "last_raw_text": "16,465.60",
       "last_success": true,
       "status": "active",
       "is_eod": true,
@@ -389,8 +389,8 @@
         "width": 320,
         "height": 340
       },
-      "last_amount": 8455.0,
-      "last_raw_text": "\u20b18,455",
+      "last_amount": 13572.0,
+      "last_raw_text": "\u20b113,572",
       "last_success": true,
       "status": "active",
       "is_eod": true,
@@ -449,8 +449,8 @@
         "width": 320,
         "height": 340
       },
-      "last_amount": 6684.6,
-      "last_raw_text": "\u20b16,684.60 (30 stores)",
+      "last_amount": 14588.35,
+      "last_raw_text": "\u20b114,588.35 (30 stores)",
       "last_success": true,
       "status": "active",
       "is_eod": true,
@@ -473,8 +473,8 @@
         "width": 320,
         "height": 340
       },
-      "last_amount": 11996.0,
-      "last_raw_text": "\u20b111,996",
+      "last_amount": 19763.0,
+      "last_raw_text": "\u20b119,763",
       "last_success": true,
       "status": "active",
       "is_eod": true
@@ -534,8 +534,8 @@
         "width": 320,
         "height": 340
       },
-      "last_amount": 14823.63,
-      "last_raw_text": "\u20b114,823.63 (Overall \u20b121,508.23 - Caloocan \u20b16,684.60)",
+      "last_amount": 13555.6,
+      "last_raw_text": "\u20b113,555.60 (Overall \u20b128,143.95 - Caloocan \u20b114,588.35)",
       "last_success": true,
       "status": "active",
       "is_eod": true
@@ -556,15 +556,15 @@
         "width": 320,
         "height": 340
       },
-      "last_amount": 6195.0,
-      "last_raw_text": "\u20b16,195",
+      "last_amount": 8461.0,
+      "last_raw_text": "\u20b18,461",
       "last_success": true,
       "status": "active",
       "is_eod": true
     }
   ],
-  "eod_total_sales": 100657.81,
-  "eod_last_updated": "2026-10-07 00:01:22 (Yesterday EOD)",
+  "eod_total_sales": 134316.75,
+  "eod_last_updated": "2026-10-12 15:45:06 (Yesterday EOD)",
   "eod_recorded": true,
-  "timestamp": "2026-10-07 00:22:47"
+  "timestamp": "2026-10-12 20:07:09"
 }

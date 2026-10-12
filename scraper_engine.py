@@ -2518,6 +2518,7 @@ class ScraperEngine:
         except Exception as e:
             self.log(f"Error saving to CSV file: {e}", "ERROR")
 
+
     def close_all(self):
         """Closes all browsers and shuts down Playwright engine."""
         self.log("Closing all browsers...", "INFO")

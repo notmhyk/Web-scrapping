@@ -4,11 +4,21 @@
     "auto_refresh": true,
     "refresh_wait_seconds": 5,
     "panda_refresh_wait_seconds": 10,
-    "force_retry_on_zero": false,
-    "max_retries": 1,
+    "force_retry_on_zero": true,
+    "max_retries": 3,
     "txt_output_path": "sales_records.txt",
     "csv_output_path": "sales_records.csv",
     "headless": false
+  },
+  "google_sheets": {
+    "enabled": true,
+    "method": "webhook",
+    "webhook_url": "https://script.google.com/macros/s/AKfycbxr7rzhQJcjF0AIJgFOS_wljxIBNmlg3a8ws-AZZen_CfQS1eZnoZ8CXBV4mIqfSoqG0g/exec",
+    "sheet_name": "Sales Report - AirKitchen",
+    "spreadsheet_name": "Sales Report",
+    "credentials_json": "google_credentials.json",
+    "auto_sync_on_hourly_scrape": true,
+    "auto_sync_on_eod_scrape": true
   },
   "branches": [
     {

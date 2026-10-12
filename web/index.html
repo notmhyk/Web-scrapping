@@ -117,6 +117,23 @@
           </button>
         </div>
       </div>
+      <!-- Google Sheets Integration Bar -->
+      <div class="google-sheets-bar" style="margin-top: 12px; padding: 12px 18px; border-top: 1px solid #334155; display: flex; flex-wrap: wrap; align-items: center; gap: 12px; background: rgba(15, 23, 42, 0.4); border-radius: 8px;">
+        <label class="checkbox-label" title="Enable automatic sync to Google Sheet every hour and on EOD">
+          <input type="checkbox" id="gs-enabled-chk">
+          <span style="font-weight: 700; color: #38bdf8;">Google Sheets Sync</span>
+        </label>
+        <div class="input-group" style="flex: 1; min-width: 250px; display: flex; align-items: center; gap: 6px;">
+          <label for="gs-webhook-url" style="white-space: nowrap; font-size: 11px; color: #94a3b8;">Webhook URL:</label>
+          <input type="text" id="gs-webhook-url" placeholder="Paste Google Apps Script Web App URL here..." style="flex: 1; font-size: 11.5px; padding: 6px 10px; background: #1e293b; border: 1px solid #475569; border-radius: 6px; color: #f8fafc;">
+        </div>
+        <button id="btn-sync-gs-now" class="btn btn-secondary" style="background-color: #0284c7; border-color: #38bdf8; color: #fff; font-weight: 600;" title="Test sending current sales to Google Sheet now">
+          📊 Sync Live to Sheet
+        </button>
+        <button id="btn-sync-gs-eod" class="btn btn-secondary" style="background-color: #b45309; border-color: #f59e0b; color: #fff; font-weight: 600;" title="Send EOD data to S44 in Google Sheet">
+          🌙 Sync EOD to S44
+        </button>
+      </div>
     </section>
 
     <!-- View Mode Switcher: Live Today vs Yesterday EOD -->

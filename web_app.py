@@ -154,6 +154,7 @@ class PersistentScraperWorker(threading.Thread):
             
             app_state["stores"] = fresh_stores
             app_state["general"] = self.engine.config.get("general", {})
+            app_state["google_sheets"] = self.engine.config.get("google_sheets", {})
             app_state["total_sales"] = 0.0
             app_state["last_updated"] = "Not Synced Yet"
             app_state["is_live_synced"] = False
@@ -285,6 +286,15 @@ class PersistentScraperWorker(threading.Thread):
 
                     live_results = self.engine.scrape_all(is_eod=False, on_store_scraped=lambda r: apply_store_result(r, is_eod=False))
                     
+                    # Auto-sync live sales to Google Sheet
+                    try:
+                        from google_sheets_sync import sync_sales_to_google_sheet
+                        with state_lock:
+                            stores_snapshot = [dict(s) for s in app_state["stores"]]
+                        sync_sales_to_google_sheet(stores_snapshot, is_eod=False, log_func=log_listener)
+                    except Exception as ge:
+                        log_listener(f"Google Sheets sync notice: {ge}", "WARNING")
+
                     broadcast_event("scrape_finished", {
                         "data": {
                             "branches": app_state["branches"],
@@ -307,6 +317,15 @@ class PersistentScraperWorker(threading.Thread):
 
                     results = self.engine.scrape_all(is_eod=False, on_store_scraped=lambda r: apply_store_result(r, is_eod=False))
 
+                    # Auto-sync live sales to Google Sheet
+                    try:
+                        from google_sheets_sync import sync_sales_to_google_sheet
+                        with state_lock:
+                            stores_snapshot = [dict(s) for s in app_state["stores"]]
+                        sync_sales_to_google_sheet(stores_snapshot, is_eod=False, log_func=log_listener)
+                    except Exception as ge:
+                        log_listener(f"Google Sheets sync notice: {ge}", "WARNING")
+
                     broadcast_event("scrape_finished", {
                         "data": {
                             "branches": app_state["branches"],
@@ -328,6 +347,15 @@ class PersistentScraperWorker(threading.Thread):
                     broadcast_event("status_update", {"stores": app_state["stores"], "eod_stores": app_state["eod_stores"]})
 
                     results = self.engine.scrape_all(is_eod=True, on_store_scraped=lambda r: apply_store_result(r, is_eod=True))
+
+                    # Auto-sync EOD sales to Google Sheet (Table S44)
+                    try:
+                        from google_sheets_sync import sync_sales_to_google_sheet
+                        with state_lock:
+                            eod_snapshot = [dict(s) for s in app_state["eod_stores"]]
+                        sync_sales_to_google_sheet(eod_snapshot, is_eod=True, log_func=log_listener)
+                    except Exception as ge:
+                        log_listener(f"Google Sheets sync notice: {ge}", "WARNING")
 
                     broadcast_event("eod_updated", {
                         "eod_stores": app_state["eod_stores"],
@@ -452,10 +480,15 @@ class PersistentScraperWorker(threading.Thread):
 
                 elif task_type == "update_settings":
                     gen = args.get("general", {})
-                    self.engine.config.setdefault("general", {}).update(gen)
+                    if gen:
+                        self.engine.config.setdefault("general", {}).update(gen)
+                    gs = args.get("google_sheets", {})
+                    if gs:
+                        self.engine.config.setdefault("google_sheets", {}).update(gs)
                     self.engine.save_config()
                     with state_lock:
-                        app_state["general"] = self.engine.config["general"]
+                        app_state["general"] = self.engine.config.get("general", {})
+                        app_state["google_sheets"] = self.engine.config.get("google_sheets", {})
 
             except Exception as e:
                 log_listener(f"Worker Error: {e}", "ERROR")
@@ -469,35 +502,43 @@ class PersistentScraperWorker(threading.Thread):
                 pass
 
 
-# Background Auto-Scrape & Midnight / 1 AM EOD Scheduler Thread
+# Background Auto-Scrape & Hourly / Midnight Scheduler Thread
 def auto_scrape_timer_loop():
     executed_eod_slots = set()
+    executed_hourly_slots = set()
     while True:
         time.sleep(1)
+        now = datetime.now()
         
         # 1. Automated Scheduled EOD at 12:00 AM Midnight and 1:00 AM daily
-        now = datetime.now()
         if now.hour in (0, 1):
             slot_key = f"{now.strftime('%Y-%m-%d')}_{now.hour:02d}"
             if slot_key not in executed_eod_slots:
                 executed_eod_slots.add(slot_key)
                 hour_label = "12:00 AM Midnight" if now.hour == 0 else "1:00 AM"
-                log_listener(f"[Scheduled EOD] Clock reached {hour_label}. Automatically scraping & recording Yesterday's EOD for all 4 hubs...", "INFO")
+                log_listener(f"[Scheduled EOD] Clock reached {hour_label}. Automatically scraping & recording Yesterday's EOD to Google Sheet (S44)...", "INFO")
                 task_queue.put(("scrape_eod", {}))
 
-        # 2. Periodic Auto-Scraping Interval (when enabled)
+        # 2. Automated Hourly Trigger at the top of every hour (:00)
+        if now.minute == 0:
+            hour_slot_key = now.strftime("%Y-%m-%d_%H")
+            if hour_slot_key not in executed_hourly_slots:
+                executed_hourly_slots.add(hour_slot_key)
+                slot_name = now.strftime("%I:00 %p").lstrip("0")
+                log_listener(f"[Hourly Auto-Trigger] Clock reached {slot_name}. Triggering automated scrape & Google Sheet update...", "INFO")
+                task_queue.put(("scrape_all", {}))
+
+        # 3. Periodic Auto-Scraping Countdown Interval (when enabled)
         with state_lock:
             running = app_state["auto_running"]
-            if not running:
-                continue
-            
-            if app_state["countdown_seconds"] > 0:
-                app_state["countdown_seconds"] -= 1
-            else:
-                interval_mins = app_state.get("general", {}).get("interval_minutes", 1)
-                app_state["countdown_seconds"] = interval_mins * 60
-                log_listener("Auto-interval reached. Triggering scrape across all 4 cities...", "INFO")
-                task_queue.put(("scrape_all", {}))
+            if running:
+                if app_state["countdown_seconds"] > 0:
+                    app_state["countdown_seconds"] -= 1
+                else:
+                    interval_mins = app_state.get("general", {}).get("interval_minutes", 60)
+                    app_state["countdown_seconds"] = interval_mins * 60
+                    log_listener(f"Interval reached ({interval_mins} min). Triggering scrape across all 4 cities...", "INFO")
+                    task_queue.put(("scrape_all", {}))
 
 
 # --- Flask Routes & Public Tunnel Security Guard ---
@@ -788,11 +829,48 @@ def api_startup_eod_flow():
 def api_update_settings():
     data = request.json or {}
     with state_lock:
-        app_state.setdefault("general", {}).update(data)
-        if "interval_minutes" in data and app_state["auto_running"]:
-            app_state["countdown_seconds"] = data["interval_minutes"] * 60
-    task_queue.put(("update_settings", {"general": data}))
+        if "general" in data:
+            app_state.setdefault("general", {}).update(data["general"])
+            gen = data["general"]
+            if "interval_minutes" in gen and app_state["auto_running"]:
+                app_state["countdown_seconds"] = gen["interval_minutes"] * 60
+        else:
+            app_state.setdefault("general", {}).update(data)
+            if "interval_minutes" in data and app_state["auto_running"]:
+                app_state["countdown_seconds"] = data["interval_minutes"] * 60
+
+        if "google_sheets" in data:
+            app_state.setdefault("google_sheets", {}).update(data["google_sheets"])
+
+    task_queue.put(("update_settings", data))
     return jsonify({"status": "success"})
+
+
+@app.route("/api/sync_google_sheets", methods=["POST"])
+def api_sync_google_sheets():
+    """Manual or triggered sync to Google Sheet."""
+    data = request.json or {}
+    is_eod = data.get("is_eod", False)
+    time_slot = data.get("time_slot")
+    date_str = data.get("date_str")
+
+    with state_lock:
+        target_stores = app_state.get("eod_stores", []) if is_eod else app_state.get("stores", [])
+
+    try:
+        from google_sheets_sync import sync_sales_to_google_sheet
+        result = sync_sales_to_google_sheet(
+            target_stores,
+            is_eod=is_eod,
+            time_slot=time_slot,
+            date_str=date_str,
+            log_func=log_listener
+        )
+        return jsonify(result)
+    except Exception as e:
+        log_listener(f"[Google Sheets] Sync error: {e}", "ERROR")
+        return jsonify({"success": False, "error": str(e)}), 500
+
 
 
 @app.route("/api/open_file/<ftype>", methods=["POST"])

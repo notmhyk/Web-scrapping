@@ -249,6 +249,53 @@ function setupEventListeners() {
     document.getElementById("console-window").innerHTML = "";
   });
 
+  // Google Sheets Listeners
+  const gsChk = document.getElementById("gs-enabled-chk");
+  if (gsChk) {
+    gsChk.addEventListener("change", (e) => {
+      postAPI("/api/update_settings", { google_sheets: { enabled: e.target.checked } });
+      showToast(`Google Sheets Sync ${e.target.checked ? "Enabled" : "Disabled"}`, "info");
+    });
+  }
+
+  const gsUrl = document.getElementById("gs-webhook-url");
+  if (gsUrl) {
+    gsUrl.addEventListener("change", (e) => {
+      postAPI("/api/update_settings", { google_sheets: { webhook_url: e.target.value.trim() } });
+      showToast("Google Sheets Webhook URL saved!", "success");
+    });
+  }
+
+  const btnSyncGsNow = document.getElementById("btn-sync-gs-now");
+  if (btnSyncGsNow) {
+    btnSyncGsNow.addEventListener("click", () => {
+      showToast("Syncing current live sales to Google Sheet...", "info");
+      postAPI("/api/sync_google_sheets", { is_eod: false })
+        .then(res => {
+          if (res && res.success) {
+            showToast("Successfully synced live sales to Google Sheet!", "success");
+          } else {
+            showToast("Sync failed: " + (res ? (res.error || res.message) : "Unknown error"), "error");
+          }
+        });
+    });
+  }
+
+  const btnSyncGsEod = document.getElementById("btn-sync-gs-eod");
+  if (btnSyncGsEod) {
+    btnSyncGsEod.addEventListener("click", () => {
+      showToast("Syncing EOD sales to table S44 in Google Sheet...", "info");
+      postAPI("/api/sync_google_sheets", { is_eod: true })
+        .then(res => {
+          if (res && res.success) {
+            showToast("Successfully synced EOD to S44 in Google Sheet!", "success");
+          } else {
+            showToast("Sync failed: " + (res ? (res.error || res.message) : "Unknown error"), "error");
+          }
+        });
+    });
+  }
+
   // Modal Close
   document.getElementById("modal-close-btn").addEventListener("click", closeModal);
   document.getElementById("modal-ok-btn").addEventListener("click", closeModal);
@@ -395,6 +442,16 @@ function updateDashboardUI(data) {
       document.getElementById("retries-input").value = data.general.max_retries || 3;
     }
     document.getElementById("force-retry-chk").checked = data.general.force_retry_on_zero !== false;
+  }
+
+  // Sync Google Sheets Settings
+  if (data.google_sheets) {
+    const gsChk = document.getElementById("gs-enabled-chk");
+    if (gsChk) gsChk.checked = data.google_sheets.enabled !== false;
+    const gsUrl = document.getElementById("gs-webhook-url");
+    if (gsUrl && document.activeElement !== gsUrl) {
+      gsUrl.value = data.google_sheets.webhook_url || "";
+    }
   }
 }
 
